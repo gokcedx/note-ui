@@ -23,8 +23,8 @@ public class MyUI extends UI {
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
-        SavePage savePage = new SavePage();
-        setContent(savePage);
+        MainPage mainPage = new MainPage();
+        setContent(mainPage);
     }
 
     @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)

@@ -14,15 +14,26 @@ public class SavePage extends VerticalLayout {
         VerticalLayout saveLayout = new VerticalLayout();
         saveLayout.setSpacing(true);
 
+        Button geri = new Button("Geri");
+        geri.setWidth("50%");
+        geri.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                MainPage mainPage = new MainPage();
+                MyUI.getCurrent().setContent(mainPage);
+            }
+        });
+
         TextField konu = new TextField();
-        konu.setWidth("33%");
+        konu.setWidth("50%");
         konu.setCaption("Konu:");
 
         RichTextArea not = new RichTextArea();
-        not.setHeight("750px");
-        not.setWidth("33%");
+        not.setHeight("500px");
+        not.setWidth("50%");
 
         Button button = new Button("Kaydet");
+        button.setWidth("50%");
         button.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
@@ -30,8 +41,9 @@ public class SavePage extends VerticalLayout {
             }
         });
 
-        saveLayout.addComponents(konu,not, button);
+        saveLayout.addComponents(geri,konu,not, button);
         addComponent(saveLayout);
+        saveLayout.setComponentAlignment(geri, Alignment.MIDDLE_CENTER);
         saveLayout.setComponentAlignment(konu, Alignment.MIDDLE_CENTER);
         saveLayout.setComponentAlignment(not, Alignment.MIDDLE_CENTER);
         saveLayout.setComponentAlignment(button, Alignment.MIDDLE_CENTER);
