@@ -16,17 +16,17 @@ public class MainPage extends VerticalLayout{
         HorizontalLayout layout = new HorizontalLayout();
         layout.setSizeFull();
         addComponent(layout);
+
         VerticalLayout sideBar = new VerticalLayout();
-        layout.addComponent(sideBar);
-        layout.setExpandRatio(sideBar, 0.4f);
         VerticalLayout content = new VerticalLayout();
-        layout.addComponent(content);
+
+        layout.addComponents(sideBar, content);
+
+        layout.setExpandRatio(sideBar, 0.4f);
         layout.setExpandRatio(content, 0.6f);
 
         Button kayit = new Button("Yeni Kayıt");
         kayit.setWidth("100%");
-        sideBar.addComponent(kayit);
-        sideBar.setComponentAlignment(kayit, Alignment.TOP_CENTER);
         kayit.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
@@ -40,31 +40,36 @@ public class MainPage extends VerticalLayout{
         table.addContainerProperty("#", Long.class, null);
         table.addContainerProperty("Konu",  String.class, null);
         table.setWidth("100%");
-        sideBar.addComponent(table);
-        sideBar.setMargin(true);
+
+        sideBar.addComponents(kayit,table);
+
+        sideBar.setComponentAlignment(kayit, Alignment.TOP_CENTER);
         sideBar.setComponentAlignment(table, Alignment.TOP_CENTER);
-        //deneme
+
+        //deneme satır
         Object newItemId = table.addItem();
         Item row1 = table.getItem(newItemId);
         row1.getItemProperty("#").setValue(1L);
         row1.getItemProperty("Konu").setValue("Spring Boot ile Deneme Proje");
-        //deneme
+        //deneme  satır
 
 
         TextField konu = new TextField();
-        konu.setEnabled(false);
         konu.setWidth("100%");
-        content.addComponent(konu);
-        content.setComponentAlignment(konu, Alignment.TOP_LEFT);
+        konu.setEnabled(false);
 
         TextArea icerik = new TextArea();
-        icerik.setEnabled(false);
         icerik.setWidth("100%");
         icerik.setHeight("600px");
         icerik.setCaption(" ");
-        content.addComponent(icerik);
+        icerik.setEnabled(false);
+
+        content.addComponents(konu, icerik);
+
+        content.setComponentAlignment(konu, Alignment.TOP_LEFT);
         content.setComponentAlignment(icerik, Alignment.TOP_LEFT);
 
+        sideBar.setMargin(true);
         content.setMargin(true);
     }
 
