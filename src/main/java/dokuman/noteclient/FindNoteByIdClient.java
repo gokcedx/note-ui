@@ -1,4 +1,4 @@
-package dokuman.client;
+package dokuman.noteclient;
 
 /**
  * @author Gökçe DOĞANAY

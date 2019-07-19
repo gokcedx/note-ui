@@ -1,6 +1,8 @@
 package dokuman;
 
 import com.vaadin.ui.*;
+import dokuman.noteclient.SaveNoteClient;
+import dokuman.dto.NoteDto;
 
 /**
  * @author Kübra VARICI
@@ -37,7 +39,12 @@ public class SavePage extends VerticalLayout {
         button.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
+                NoteDto noteDto = new NoteDto();
+                noteDto.setKonu(konu.getValue());
+                noteDto.setIcerik(not.getValue());
 
+                SaveNoteClient saveNoteClient = new SaveNoteClient();
+                saveNoteClient.saveNote(noteDto);
             }
         });
 
