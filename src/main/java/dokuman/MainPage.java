@@ -1,13 +1,31 @@
 package dokuman;
 
 import com.vaadin.data.Item;
+import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.*;
+import dokuman.dto.NoteDto;
+import dokuman.noteclient.FindAllNoteClient;
+import dokuman.noteclient.FindNoteByIdClient;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Gökçe DOĞANAY
  * @since 0.0.1
  */
 public class MainPage extends VerticalLayout{
+
+    private Table table;
+    private Button kayit;
+    private HorizontalLayout search;
+    private TextField searchBox;
+    private Button searchButton;
+    private ComboBox searchCombo;
+    private TextField konu;
+    private TextArea icerik;
+
     public MainPage() {
         buildMainLayout();
     }
@@ -25,7 +43,7 @@ public class MainPage extends VerticalLayout{
         layout.setExpandRatio(sideBar, 0.4f);
         layout.setExpandRatio(content, 0.6f);
 
-        Button kayit = new Button("Yeni Kayıt");
+        kayit = new Button("Yeni Kayıt");
         kayit.setWidth("100%");
         kayit.addClickListener(new Button.ClickListener() {
             @Override
@@ -35,30 +53,64 @@ public class MainPage extends VerticalLayout{
             }
         });
 
+        search = new HorizontalLayout();
+        searchBox = new TextField();
+        searchBox.setWidth("100%");
+        searchButton = new Button("ARA");
+        searchButton.setWidth("100%");
+        Collection<String> noteData = new ArrayList<String>();
+        noteData.add("Konular");
+        noteData.add("İçerik");
+        searchCombo = new ComboBox();
+        searchCombo.addItems(noteData);
+        searchCombo.setWidth("50%");
+        searchCombo.setTextInputAllowed(false);
+        searchCombo.setNullSelectionAllowed(false);
+        searchCombo.setValue(noteData.iterator().next());
+        search.setCaption(" ");
+        search.addComponents(searchCombo,searchBox,searchButton);
+        search.setExpandRatio(searchBox, 0.6f);
+        search.setExpandRatio(searchButton, 0.2f);
+        search.setExpandRatio(searchCombo, 0.2f);
 
-        Table table = new Table(" ");
-        table.addContainerProperty("#", Long.class, null);
+        searchButton.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+
+            }
+        });
+
+        table = new Table(" ");
         table.addContainerProperty("Konu",  String.class, null);
         table.setWidth("100%");
+        table.setSelectable(true);
+        table.addItemClickListener(new ItemClickEvent.ItemClickListener() {
+            @Override
+            public void itemClick(ItemClickEvent event) {
+                NoteDto noteDto = (NoteDto) event.getItemId();
+                FindNoteByIdClient findNoteByIdClient = new FindNoteByIdClient();
+                if(noteDto != null){
+                    Long id = noteDto.getId();
+                    NoteDto noteById = findNoteByIdClient.findNoteById(id);
+                    konu.setValue(noteById.getKonu());
+                    icerik.setValue(noteById.getIcerik());
+                }
+            }
+        });
 
-        sideBar.addComponents(kayit,table);
+        sideBar.addComponents(kayit,search,table);
 
         sideBar.setComponentAlignment(kayit, Alignment.TOP_CENTER);
+        sideBar.setComponentAlignment(search, Alignment.TOP_CENTER);
         sideBar.setComponentAlignment(table, Alignment.TOP_CENTER);
 
-        //deneme satır
-        Object newItemId = table.addItem();
-        Item row1 = table.getItem(newItemId);
-        row1.getItemProperty("#").setValue(1L);
-        row1.getItemProperty("Konu").setValue("Spring Boot ile Deneme Proje");
-        //deneme  satır
+        fillTable();
 
-
-        TextField konu = new TextField();
+        konu = new TextField();
         konu.setWidth("100%");
         konu.setEnabled(false);
 
-        TextArea icerik = new TextArea();
+        icerik = new TextArea();
         icerik.setWidth("100%");
         icerik.setHeight("600px");
         icerik.setCaption(" ");
@@ -71,6 +123,15 @@ public class MainPage extends VerticalLayout{
 
         sideBar.setMargin(true);
         content.setMargin(true);
+    }
+
+    public void fillTable(){
+        FindAllNoteClient findAllNoteClient = new FindAllNoteClient();
+        List<NoteDto> noteDtoList = findAllNoteClient.findAllNote();
+        for (NoteDto noteDto : noteDtoList) {
+            Item item = table.addItem(noteDto);
+            item.getItemProperty("Konu").setValue(noteDto.getKonu());
+        }
     }
 
 }
