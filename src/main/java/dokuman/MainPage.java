@@ -6,6 +6,7 @@ import com.vaadin.ui.*;
 import dokuman.dto.NoteDto;
 import dokuman.noteclient.FindAllNoteClient;
 import dokuman.noteclient.FindNoteByIdClient;
+import dokuman.noteclient.FindNoteClient;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -76,7 +77,19 @@ public class MainPage extends VerticalLayout{
         searchButton.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
-
+                String comboValue = searchCombo.getValue().toString();
+                String boxValue = searchBox.getValue();
+                NoteDto noteDto = new NoteDto();
+                if(boxValue.equals("")){
+                    fillTable();
+                }else{
+                    if(comboValue.equals("Konular")){
+                        noteDto.setKonu(boxValue);
+                    }else if(comboValue.equals("İçerik")){
+                        noteDto.setIcerik(boxValue);
+                    }
+                    fillTableByKonuOrIcerik(noteDto);
+                }
             }
         });
 
@@ -126,11 +139,22 @@ public class MainPage extends VerticalLayout{
     }
 
     public void fillTable(){
+        table.removeAllItems();
         FindAllNoteClient findAllNoteClient = new FindAllNoteClient();
         List<NoteDto> noteDtoList = findAllNoteClient.findAllNote();
         for (NoteDto noteDto : noteDtoList) {
             Item item = table.addItem(noteDto);
             item.getItemProperty("Konu").setValue(noteDto.getKonu());
+        }
+    }
+
+    public void fillTableByKonuOrIcerik(NoteDto noteDto){
+        table.removeAllItems();
+        FindNoteClient findNoteClient = new FindNoteClient();
+        List<NoteDto> noteDtoList = findNoteClient.findNote(noteDto);
+        for (NoteDto dto : noteDtoList) {
+            Item item = table.addItem(dto);
+            item.getItemProperty("Konu").setValue(dto.getKonu());
         }
     }
 
