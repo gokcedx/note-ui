@@ -27,6 +27,7 @@ public class SaveNoteClient {
         HttpResponse response = null;
         try {
             StringEntity input = new StringEntity(gson.toJson(noteDto), Charset.forName("utf-8"));
+            input.setContentType("application/json");
             post.setEntity(input);
             response = client.execute(post);
 
