@@ -35,6 +35,7 @@ public class FindAllNoteClient {
             InputStream inputStream = conn.getInputStream();
             String output = IOUtils.toString(inputStream, conn.getContentEncoding() == null ? "UTF-8" : conn.getContentEncoding());
             GsonBuilder gsonBuilder = new GsonBuilder();
+            gsonBuilder.setDateFormat("dd:MM:yyyy");
             Gson gson = gsonBuilder.create();
             Type collectionType = new TypeToken<Collection<NoteDto>>() {}.getType();
             noteDtoList = gson.fromJson(output, collectionType);

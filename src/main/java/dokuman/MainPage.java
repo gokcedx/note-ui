@@ -8,8 +8,11 @@ import dokuman.noteclient.FindAllNoteClient;
 import dokuman.noteclient.FindNoteByIdClient;
 import dokuman.noteclient.FindNoteClient;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -94,6 +97,7 @@ public class MainPage extends VerticalLayout{
         });
 
         table = new Table(" ");
+        table.addContainerProperty("Tarih",  String.class, null);
         table.addContainerProperty("Konu",  String.class, null);
         table.setWidth("100%");
         table.setSelectable(true);
@@ -142,20 +146,24 @@ public class MainPage extends VerticalLayout{
         table.removeAllItems();
         FindAllNoteClient findAllNoteClient = new FindAllNoteClient();
         List<NoteDto> noteDtoList = findAllNoteClient.findAllNote();
+        fillNoteTable(noteDtoList);
+    }
+
+    public void fillTableByKonuOrIcerik(NoteDto dto){
+        table.removeAllItems();
+        FindNoteClient findNoteClient = new FindNoteClient();
+        List<NoteDto> noteDtoList = findNoteClient.findNote(dto);
+        fillNoteTable(noteDtoList);
+    }
+
+    private void fillNoteTable(List<NoteDto> noteDtoList) {
         for (NoteDto noteDto : noteDtoList) {
             Item item = table.addItem(noteDto);
+            Date kayitTarihi = noteDto.getKayitTarihi();
+            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            String tarih = dateFormat.format(kayitTarihi);
+            item.getItemProperty("Tarih").setValue(tarih);
             item.getItemProperty("Konu").setValue(noteDto.getKonu());
         }
     }
-
-    public void fillTableByKonuOrIcerik(NoteDto noteDto){
-        table.removeAllItems();
-        FindNoteClient findNoteClient = new FindNoteClient();
-        List<NoteDto> noteDtoList = findNoteClient.findNote(noteDto);
-        for (NoteDto dto : noteDtoList) {
-            Item item = table.addItem(dto);
-            item.getItemProperty("Konu").setValue(dto.getKonu());
-        }
-    }
-
 }
